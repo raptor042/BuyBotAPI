@@ -1,5 +1,5 @@
 import { connect } from "mongoose"
-import { GroupModel } from "./models/index.js"
+import { ChatModel } from "./models/index.js"
 import { config } from "dotenv"
 
 config()
@@ -15,42 +15,76 @@ export const connectDB = async () => {
     }
 }
 
-export const getGroup = async chatId => {
+export const getChat = async (adminId = null, chatId = null) => {
     try {
-        const group = await GroupModel.findOne({ chatId })
-        return group
+        const chat = adminId ? await ChatModel.findOne({ adminId }) : await ChatModel.findOne({ chatId })
+        return chat
     } catch (err) {
         console.log(err)
     }
 }
 
-export const getGroups = async () => {
+export const getChats = async () => {
     try {
-        const groups = await GroupModel.find()
-        return groups
+        const chats = await ChatModel.find()
+        return chats
     } catch (err) {
         console.log(err)
     }
 }
 
-export const addGroup = async (chatId, chat, adminId, admin) => {
+export const addChat = async (adminId, admin, chatId, chat) => {
     try {
-        const group = new GroupModel({
+        const chat = new ChatModel({
+            admin,
+            adminId,
+            chat,
             chatId,
-            chat
+            buys: []
         })
 
-        const data = await group.save()
+        const data = await chat.save()
         return data
     } catch (err) {
         console.log(err)
     }
 }
 
-export const addGroupToken = async (chatId, token) => {
+export const updateChatToken = async (adminId, chatId, token) => {
     try {
-        const user = await GroupModel.findOneAndUpdate({ chatId }, { $set: { token } })
-        return user
+        const chat = await ChatModel.findOneAndUpdate({ adminId, chatId }, { $set: { token } })
+        return chat
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const updateChatBuys = async (adminId, chatId, holder, amount, timestamp) => {
+    try {
+        const buy = {
+            holder,
+            amount,
+            timestamp
+        }
+        const chat = await ChatModel.findOneAndUpdate(
+            { adminId, chatId },
+            { $push : { buys : [buy] } }
+        )
+
+        return chat
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const updateChatHolderAmount = async (adminId, chatId, holder, amount) => {
+    try {
+        const chat = await ChatModel.findOneAndUpdate(
+            { adminId, chatId, buys : { $elemMatch : { holder } } },
+            { $inc : { "buys.$.amount" : amount } }
+        )
+
+        return chat
     } catch (err) {
         console.log(err)
     }

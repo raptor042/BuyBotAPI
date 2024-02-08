@@ -1,11 +1,16 @@
 import { Schema, model } from "mongoose"
 
-const GroupSchema = new Schema({
-    chatId: Number,
+const ChatSchema = new Schema({
+    adminId: {type: Number, required: true},
+    admin: String,
+    chatId: {type: Number, required: true},
     chat: String,
     token: String,
-    adminId: Number,
-    admin: String
+    buys: [{
+        holder: String,
+        amount: Number,
+        timestamp: String
+    }]
 })
 
-export const GroupModel = model("Group", GroupSchema)
+export const ChatModel = model("Chat", ChatSchema)
