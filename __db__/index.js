@@ -15,9 +15,9 @@ export const connectDB = async () => {
     }
 }
 
-export const getChat = async (adminId = null, chatId = null) => {
+export const getChat = async (chat_id) => {
     try {
-        const chat = adminId ? await ChatModel.findOne({ adminId }) : await ChatModel.findOne({ chatId })
+        const chat = await ChatModel.findOne({ chat_id })
         return chat
     } catch (err) {
         console.log(err)
@@ -33,33 +33,7 @@ export const getChats = async () => {
     }
 }
 
-export const addChat = async (adminId, admin, chatId, chat) => {
-    try {
-        const chat = new ChatModel({
-            admin,
-            adminId,
-            chat,
-            chatId,
-            buys: []
-        })
-
-        const data = await chat.save()
-        return data
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-export const updateChatToken = async (adminId, chatId, token) => {
-    try {
-        const chat = await ChatModel.findOneAndUpdate({ adminId, chatId }, { $set: { token } })
-        return chat
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-export const updateChatBuys = async (adminId, chatId, holder, amount, timestamp) => {
+export const updateChatBuys = async (chat_id, holder, amount, timestamp) => {
     try {
         const buy = {
             holder,
@@ -67,7 +41,7 @@ export const updateChatBuys = async (adminId, chatId, holder, amount, timestamp)
             timestamp
         }
         const chat = await ChatModel.findOneAndUpdate(
-            { adminId, chatId },
+            { chat_id },
             { $push : { buys : [buy] } }
         )
 
@@ -77,10 +51,10 @@ export const updateChatBuys = async (adminId, chatId, holder, amount, timestamp)
     }
 }
 
-export const updateChatHolderAmount = async (adminId, chatId, holder, amount) => {
+export const updateChatHolderAmount = async (chat_id, holder, amount) => {
     try {
         const chat = await ChatModel.findOneAndUpdate(
-            { adminId, chatId, buys : { $elemMatch : { holder } } },
+            { chat_id, buys : { $elemMatch : { holder } } },
             { $inc : { "buys.$.amount" : amount } }
         )
 

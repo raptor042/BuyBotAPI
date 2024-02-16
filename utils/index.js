@@ -1,11 +1,6 @@
 import { 
     getChat
 } from "../__db__/index.js"
-import { config } from "dotenv"
-
-config()
-
-const token = process.env.TG_BOT_TOKEN
 
 export const chatExists = async chatId => {
     const chat = await getChat(chatId)
@@ -21,7 +16,7 @@ export const holderExists = async (chatId, holder) => {
     const _holder = chat.buys.filter(buy => buy.holder == holder)
     console.log(_holder)
 
-    return _holder.length > 0 ? true : false
+    return _holder.length
 }
 
 export const getHolder = async (chatId, holder) => {
@@ -43,14 +38,7 @@ export const getToken = async token => {
 
 export const getTimestamp = () => {
     const date = new Date()
-    const timestamp = date.getSeconds()
+    const timestamp = date.getTime() / 1000
 
     return timestamp
-}
-
-export const getAdmins = async chatId => {
-    const response = await fetch(`https://api.telegram.org/bot${token}/getChatAdministrators?chat_id=${chatId}`)
-    const data = await response.json()
-    
-    return data
 }

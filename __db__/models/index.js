@@ -1,10 +1,7 @@
 import { Schema, model } from "mongoose"
 
 const ChatSchema = new Schema({
-    adminId: {type: Number, required: true},
-    admin: String,
-    chatId: {type: Number, required: true},
-    chat: String,
+    chat_id: {type: Number, required: true},
     token: String,
     buys: [{
         holder: String,
