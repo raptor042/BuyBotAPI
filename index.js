@@ -71,7 +71,7 @@ const getBuys = async () => {
                 )
                 console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(2)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(2)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(2)} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(18)).toLocaleString()}`
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
@@ -79,12 +79,12 @@ const getBuys = async () => {
                 const _chat = updateChatBuys(
                     chat.chat_id,
                     to,
-                    Number(ethers.formatEther(value)).toFixed(2),
+                    Number(ethers.formatEther(value)).toFixed(18),
                     timestamp
                 )
                 console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(2)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(2)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(2)} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(18)).toLocaleString()}`
             }
 
             try {
