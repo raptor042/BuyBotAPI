@@ -71,7 +71,7 @@ const getBuys = async () => {
                 )
                 console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd)).toLocaleString()}`
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
@@ -84,7 +84,7 @@ const getBuys = async () => {
                 )
                 console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd)).toLocaleString()}`
             }
 
             try {
