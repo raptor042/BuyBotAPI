@@ -2,7 +2,7 @@ import { Telegraf } from "telegraf"
 import { config } from "dotenv"
 import { connectDB, getChats, updateChatBuys, updateChatHolderAmount } from "./__db__/index.js"
 import { ethers } from "ethers"
-import { getHolder, getTimestamp, getToken, holderExists } from "./utils/index.js"
+import { format, getHolder, getTimestamp, getToken, holderExists } from "./utils/index.js"
 import { PAIR_ERC20_ABI } from "./__web3__/config.js"
 import { getProvider } from "./__web3__/init.js"
 
@@ -22,16 +22,20 @@ const getBuys = async () => {
         const token = new ethers.Contract(
             chat.token,
             PAIR_ERC20_ABI.abi,
-            getProvider()
+            getProvider(chat.chain)
         )
 
         token.on("Transfer", async (from, to, value, e) => {
+            console.log(chat.chain)
             console.log(from, to, value)
             const name = await token.name()
             console.log(name)
 
+            const decimals = await token.decimals()
+            console.log(decimals)
+
             const supply = await token.totalSupply()
-            console.log(ethers.formatEther(supply))
+            console.log(format(supply, decimals))
 
             const tokenInfo = await getToken(chat.token)
             // console.log(tokenInfo)
@@ -39,7 +43,13 @@ const getBuys = async () => {
             const _holder = holderExists(chat.chat_id, to)
             console.log(_holder > 0)
 
-            let text = `${name} Buy!!!!\n🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀\n\n`
+            let text = `${name} Buy!!!!\n`
+
+            for(let i = 0; i < 39; i++) {
+                text += `${chat.emoji}`
+            }
+
+            text += "\n\n"
 
             if(_holder > 0) {
                 const holder = await getHolder(chat.chat_id, to)
@@ -64,27 +74,25 @@ const getBuys = async () => {
 
                 console.log(priceChange)
 
-                const _chat = updateChatHolderAmount(
+                await updateChatHolderAmount(
                     chat.chat_id,
                     to,
-                    Number(ethers.formatEther(value)).toFixed(2)
+                    format(value, decimals)
                 )
-                console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} BNB ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
 
-                const _chat = updateChatBuys(
+                await updateChatBuys(
                     chat.chat_id,
                     to,
-                    Number(ethers.formatEther(value)).toFixed(18),
+                    format(value, decimals),
                     timestamp
                 )
-                console.log(_chat)
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * ethers.formatEther(value)).toFixed(18)} BNB ($${Number(tokenInfo.pairs[0].priceUsd * ethers.formatEther(value)).toFixed(18)})\n\n🪙 ${Number(ethers.formatEther(value)).toFixed(18)} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(ethers.formatEther(supply) * tokenInfo.pairs[0].priceUsd)).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} BNB ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
             }
 
             try {

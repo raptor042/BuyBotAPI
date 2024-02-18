@@ -1,3 +1,4 @@
+import { ethers } from "ethers"
 import { 
     getChat
 } from "../__db__/index.js"
@@ -41,4 +42,12 @@ export const getTimestamp = () => {
     const timestamp = date.getTime() / 1000
 
     return timestamp
+}
+
+export const format = (amount, decimals) => {
+    if(Number(decimals) == 18) {
+        return Number(ethers.formatEther(amount))
+    } else {
+        return Number(ethers.formatEther(amount)) * 10**Number(decimals)
+    }
 }
