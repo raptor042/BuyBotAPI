@@ -33,6 +33,15 @@ export const getChats = async () => {
     }
 }
 
+export const getChatsViaVolume = async chain => {
+    try {
+        const chats = await ChatModel.find({ chain }).sort({ volume: -1 }).limit(20)
+        return chats
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 export const updateChatBuys = async (chat_id, holder, amount, timestamp) => {
     try {
         const buy = {

@@ -5,6 +5,7 @@ const ChatSchema = new Schema({
     chain: String,
     token: String,
     emoji: String,
+    volume: Number,
     buys: [{
         holder: String,
         amount: Number,
