@@ -134,7 +134,7 @@ const trending = async (chain) => {
         // console.log(tokenInfo)
 
         if(tokenInfo.pairs == null) {
-            text += `${emojis[index]} ${name}\n | Nil | Nil`
+            text += `${emojis[index]} ${name} | Nil | Nil\n`
         } else {
             text += `${emojis[index]} ${name} | $${Number(tokenInfo.pairs[0].volume.h24).toLocaleString()} | ${tokenInfo.pairs[0].priceChange.h24}\n`
         }
