@@ -270,11 +270,11 @@ const trending = async (chain) => {
 
 connectDB()
 
-// setTimeout(() => {
-//     getBuys()
+setTimeout(() => {
+    getBuys()
 
-//     setInterval(getBuys, 1000*60*5)
-// }, 1000)
+    setInterval(getBuys, 1000*60*5)
+}, 1000)
 
 setInterval(() => {
     trending("bsc")
