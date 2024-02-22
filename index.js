@@ -8,7 +8,7 @@ import { getProvider } from "./__web3__/init.js"
 
 config()
 
-const emojis = ["Nil", "🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+const emojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
 const BSC_TRENDING = process.env.BSC_TRENDING
 
@@ -133,7 +133,11 @@ const trending = async (chain) => {
         const tokenInfo = await getToken(chat.token)
         // console.log(tokenInfo)
 
-        text += `${emojis[index]} ${name} | $${Number(tokenInfo.pairs[0].volume.h24).toLocaleString()} | ${tokenInfo.pairs[0].priceChange.h24}\n`
+        if(tokenInfo.pairs == null) {
+            text += `${emojis[index]} ${name}\n | Nil | Nil`
+        } else {
+            text += `${emojis[index]} ${name} | $${Number(tokenInfo.pairs[0].volume.h24).toLocaleString()} | ${tokenInfo.pairs[0].priceChange.h24}\n`
+        }
 
         token.on("Transfer", async (from, to, value, e) => {
             console.log(chat.chain)
@@ -227,31 +231,33 @@ const trending = async (chain) => {
                 }
             }
         })
+        
+        if(index == chats.length - 1) {
+            text += "\nAutomatically updates Trending every 30 seconds"
+
+            if(chain == "bsc") {
+                try {
+                    await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                } catch (error) {
+                    console.log(error)
+
+                    setTimeout(() => {
+                        bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                    }, 1000*5);
+                }
+            } else {
+                try {
+                    await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                } catch (error) {
+                    console.log(error)
+
+                    setTimeout(() => {
+                        bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                    }, 1000*5);
+                }
+            }
+        }
     })
-
-    text += "\nAutomatically updates Trending every 30 seconds"
-
-    if(chain == "bsc") {
-        try {
-            await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
-        } catch (error) {
-            console.log(error)
-
-            setTimeout(() => {
-                bot.telegram.sendMessage(Number(BSC_TRENDING), text)
-            }, 1000*5);
-        }
-    } else {
-        try {
-            await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
-        } catch (error) {
-            console.log(error)
-
-            setTimeout(() => {
-                bot.telegram.sendMessage(Number(ETH_TRENDING), text)
-            }, 1000*5);
-        }
-    }
 }
 
 // const getTChat = async () => {
@@ -264,12 +270,16 @@ const trending = async (chain) => {
 
 connectDB()
 
-setInterval(getBuys, 1000*60*5)
+// setTimeout(() => {
+//     getBuys()
+
+//     setInterval(getBuys, 1000*60*5)
+// }, 1000)
 
 setInterval(() => {
     trending("bsc")
 
     setTimeout(() => {
         trending("eth")
-    }, 1000*15)
+    }, 1000*2)
 }, 1000*30)
