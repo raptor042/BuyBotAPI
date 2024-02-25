@@ -1,10 +1,12 @@
 import { Telegraf } from "telegraf"
 import { config } from "dotenv"
-import { connectDB, getChats, getChatsViaVolume, updateChatBuys, updateChatHolderAmount } from "./__db__/index.js"
+import { connectDB, getChat, getChats, getChatsViaVolume, updateChatBuys, updateChatHolderAmount } from "./__db__/index.js"
 import { ethers } from "ethers"
 import { format, getHolder, getTimestamp, getToken, holderExists } from "./utils/index.js"
 import { PAIR_ERC20_ABI } from "./__web3__/config.js"
 import { getProvider } from "./__web3__/init.js"
+
+import fs from "fs"
 
 config()
 
@@ -51,8 +53,14 @@ const getBuys = async () => {
 
             let text = `${name} Buy!!!!\n`
 
-            for(let i = 0; i < 39; i++) {
-                text += `${chat.emoji}`
+            if(chat.emoji) {
+                for(let i = 0; i < 39; i++) {
+                    text += `${chat.emoji}`
+                }
+            } else {
+                for(let i = 0; i < 13; i++) {
+                    text += `🟢`
+                }
             }
 
             text += "\n\n"
@@ -101,14 +109,40 @@ const getBuys = async () => {
                 text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
             }
 
-            try {
-                await bot.telegram.sendMessage(chat.chat_id, text)
-            } catch (error) {
-                console.log(error)
-
-                setTimeout(() => {
-                    bot.telegram.sendMessage(chat.chat_id, text)
-                }, 1000*10);
+            if(chat.photo) {
+                try {
+                    await bot.telegram.sendPhoto(chat.chat_id, chat.photo)
+                    await bot.telegram.sendMessage(chat.chat_id, text)
+                } catch (error) {
+                    console.log(error)
+    
+                    setTimeout(() => {
+                        bot.telegram.sendPhoto(chat.chat_id, chat.photo)
+                        bot.telegram.sendMessage(chat.chat_id, text)
+                    }, 1000*10);
+                }
+            } else if(chat.gif) {
+                try {
+                    await bot.telegram.sendAnimation(chat.chat_id, chat.gif)
+                    await bot.telegram.sendMessage(chat.chat_id, text)
+                } catch (error) {
+                    console.log(error)
+    
+                    setTimeout(() => {
+                        bot.telegram.sendAnimation(chat.chat_id, chat.gif)
+                        bot.telegram.sendMessage(chat.chat_id, text)
+                    }, 1000*10);
+                }
+            } else {
+                try {
+                    await bot.telegram.sendMessage(chat.chat_id, text)
+                } catch (error) {
+                    console.log(error)
+    
+                    setTimeout(() => {
+                        bot.telegram.sendMessage(chat.chat_id, text)
+                    }, 1000*10);
+                }
             }
         })
     })
@@ -159,8 +193,14 @@ const trending = async (chain) => {
 
             let text = `${name} Buy!!!!\n`
 
-            for(let i = 0; i < 39; i++) {
-                text += `${chat.emoji}`
+            if(chat.emoji) {
+                for(let i = 0; i < 39; i++) {
+                    text += `${chat.emoji}`
+                }
+            } else {
+                for(let i = 0; i < 13; i++) {
+                    text += `🟢`
+                }
             }
 
             text += "\n\n"
@@ -210,24 +250,76 @@ const trending = async (chain) => {
             }
 
             if(chain == "bsc") {
-                try {
-                    await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
-                } catch (error) {
-                    console.log(error)
-    
-                    setTimeout(() => {
-                        bot.telegram.sendMessage(Number(BSC_TRENDING), text)
-                    }, 1000*10);
+                if(chat.photo) {
+                    try {
+                        await bot.telegram.sendPhoto(Number(BSC_TRENDING), chat.photo)
+                        await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendPhoto(Number(BSC_TRENDING), chat.photo)
+                            bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                        }, 1000*10);
+                    }
+                } else if(chat.gif) {
+                    try {
+                        await bot.telegram.sendAnimation(Number(BSC_TRENDING), chat.gif)
+                        await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendAnimation(Number(BSC_TRENDING), chat.gif)
+                            bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                        }, 1000*10);
+                    }
+                } else {
+                    try {
+                        await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                        }, 1000*10);
+                    }
                 }
             } else {
-                try {
-                    await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
-                } catch (error) {
-                    console.log(error)
-    
-                    setTimeout(() => {
-                        bot.telegram.sendMessage(Number(ETH_TRENDING), text)
-                    }, 1000*10);
+                if(chat.photo) {
+                    try {
+                        await bot.telegram.sendPhoto(Number(ETH_TRENDING), chat.photo)
+                        await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendPhoto(Number(ETH_TRENDING), chat.photo)
+                            bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                        }, 1000*10);
+                    }
+                } else if(chat.gif) {
+                    try {
+                        await bot.telegram.sendAnimation(Number(ETH_TRENDING), chat.gif)
+                        await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendAnimation(Number(ETH_TRENDING), chat.gif)
+                            bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                        }, 1000*10);
+                    }
+                } else {
+                    try {
+                        await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                    } catch (error) {
+                        console.log(error)
+        
+                        setTimeout(() => {
+                            bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                        }, 1000*10);
+                    }
                 }
             }
         })
@@ -240,7 +332,7 @@ const trending = async (chain) => {
                     await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
                 } catch (error) {
                     console.log(error)
-
+    
                     setTimeout(() => {
                         bot.telegram.sendMessage(Number(BSC_TRENDING), text)
                     }, 1000*5);
@@ -250,7 +342,7 @@ const trending = async (chain) => {
                     await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
                 } catch (error) {
                     console.log(error)
-
+    
                     setTimeout(() => {
                         bot.telegram.sendMessage(Number(ETH_TRENDING), text)
                     }, 1000*5);
@@ -259,14 +351,6 @@ const trending = async (chain) => {
         }
     })
 }
-
-// const getTChat = async () => {
-//     const bsc = await bot.telegram.getChat("@OxBSC_TRENDING")
-//     const eth = await bot.telegram.getChat("@OxETH_TRENDING")
-//     console.log(bsc, eth)
-// }
-
-// getTChat()
 
 connectDB()
 
