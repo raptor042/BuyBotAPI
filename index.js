@@ -58,7 +58,7 @@ const getBuys = async () => {
                     text += `${chat.emoji}`
                 }
             } else {
-                for(let i = 0; i < 12; i++) {
+                for(let i = 0; i < 36; i++) {
                     text += `🟢`
                 }
             }
@@ -198,7 +198,7 @@ const trending = async (chain) => {
                     text += `${chat.emoji}`
                 }
             } else {
-                for(let i = 0; i < 12; i++) {
+                for(let i = 0; i < 36; i++) {
                     text += `🟢`
                 }
             }
