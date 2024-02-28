@@ -238,7 +238,7 @@ const trending = async (chain) => {
                     format(value, decimals)
                 )
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
@@ -250,7 +250,7 @@ const trending = async (chain) => {
                     timestamp
                 )
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
+                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
             }
 
             if(chain == "bsc") {
@@ -365,6 +365,30 @@ const trending = async (chain) => {
 }
 
 connectDB()
+
+// const mCAP = async (token, chain) => {
+//     const token_ca = new ethers.Contract(
+//         token,
+//         PAIR_ERC20_ABI.abi,
+//         getProvider(chain)
+//     )
+
+//     const name = await token_ca.name()
+//     console.log(name)
+
+//     const decimals = await token_ca.decimals()
+//     console.log(decimals)
+
+//     const supply = await token_ca.totalSupply()
+//     console.log(format(supply, decimals))
+
+//     const tokenInfo = await getToken(token)
+//     console.log(tokenInfo.pairs[0].priceUsd)
+
+//     console.log(Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd))
+// }
+
+// mCAP("0x6ec07DbD9311975b8002079d70C6F6d9E3e1EE5C", "bsc")
 
 setTimeout(() => {
     getBuys()
