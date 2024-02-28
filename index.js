@@ -35,7 +35,7 @@ const getBuys = async () => {
 
         token.on("Transfer", async (from, to, value, e) => {
             console.log(chat.chain)
-            console.log(from, to, value)
+            console.log(from, to, value, e)
             const name = await token.name()
             console.log(name)
 
@@ -93,8 +93,11 @@ const getBuys = async () => {
                     to,
                     format(value, decimals)
                 )
-
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
+                if(chat.chain == "bsc") {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                } else {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                }
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
@@ -106,45 +109,57 @@ const getBuys = async () => {
                     timestamp
                 )
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}`
+                if(chat.chain == "bsc") {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                } else {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                }
             }
 
             if(chat.photo) {
                 try {
                     await bot.telegram.sendPhoto(chat.chat_id, chat.photo, {
-                        caption: text
+                        caption: text,
+                        parse_mode: "HTML"
                     })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
                         bot.telegram.sendPhoto(chat.chat_id, chat.photo, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     }, 1000*10);
                 }
             } else if(chat.gif) {
                 try {
                     await bot.telegram.sendAnimation(chat.chat_id, chat.gif, {
-                        caption: text
+                        caption: text,
+                        parse_mode: "HTML"
                     })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
                         bot.telegram.sendAnimation(chat.chat_id, chat.gif, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     }, 1000*10);
                 }
             } else {
                 try {
-                    await bot.telegram.sendMessage(chat.chat_id, text)
+                    await bot.telegram.sendMessage(chat.chat_id, text, {
+                        parse_mode: "HTML"
+                    })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
-                        bot.telegram.sendMessage(chat.chat_id, text)
+                        bot.telegram.sendMessage(chat.chat_id, text, {
+                            parse_mode: "HTML"
+                        })
                     }, 1000*10);
                 }
             }
@@ -179,7 +194,7 @@ const trending = async (chain) => {
 
         token.on("Transfer", async (from, to, value, e) => {
             console.log(chat.chain)
-            console.log(from, to, value)
+            console.log(from, to, value, e)
             const name = await token.name()
             console.log(name)
 
@@ -238,7 +253,11 @@ const trending = async (chain) => {
                     format(value, decimals)
                 )
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                if(chat.chain == "bsc") {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                } else {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                }
             } else {
                 const timestamp = getTimestamp()
                 console.log(timestamp)
@@ -250,46 +269,58 @@ const trending = async (chain) => {
                     timestamp
                 )
 
-                text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toFixed(2)).toLocaleString()}`
+                if(chat.chain == "bsc") {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                } else {
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a>Trending</a>`
+                }
             }
 
             if(chain == "bsc") {
                 if(chat.photo) {
                     try {
                         await bot.telegram.sendPhoto(Number(BSC_TRENDING), chat.photo, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
                             bot.telegram.sendPhoto(Number(BSC_TRENDING), chat.photo, {
-                                caption: text
+                                caption: text,
+                                parse_mode: "HTML"
                             })
                         }, 1000*10);
                     }
                 } else if(chat.gif) {
                     try {
                         await bot.telegram.sendAnimation(Number(BSC_TRENDING), chat.gif, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
                             bot.telegram.sendAnimation(Number(BSC_TRENDING), chat.gif, {
-                                caption: text
+                                caption: text,
+                                parse_mode: "HTML"
                             })
                         }, 1000*10);
                     }
                 } else {
                     try {
-                        await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                        await bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                            parse_mode: "HTML"
+                        })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
-                            bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                            bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                                parse_mode: "HTML"
+                            })
                         }, 1000*10);
                     }
                 }
@@ -297,39 +328,47 @@ const trending = async (chain) => {
                 if(chat.photo) {
                     try {
                         await bot.telegram.sendPhoto(Number(ETH_TRENDING), chat.photo, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
                             bot.telegram.sendPhoto(Number(ETH_TRENDING), chat.photo, {
-                                caption: text
+                                caption: text,
+                                parse_mode: "HTML"
                             })
                         }, 1000*10);
                     }
                 } else if(chat.gif) {
                     try {
                         await bot.telegram.sendAnimation(Number(ETH_TRENDING), chat.gif, {
-                            caption: text
+                            caption: text,
+                            parse_mode: "HTML"
                         })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
                             bot.telegram.sendAnimation(Number(ETH_TRENDING), chat.gif, {
-                                caption: text
+                                caption: text,
+                                parse_mode: "HTML"
                             })
                         }, 1000*10);
                     }
                 } else {
                     try {
-                        await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                        await bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                            parse_mode: "HTML"
+                        })
                     } catch (error) {
                         console.log(error)
         
                         setTimeout(() => {
-                            bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                            bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                                parse_mode: "HTML"
+                            })
                         }, 1000*10);
                     }
                 }
@@ -341,22 +380,30 @@ const trending = async (chain) => {
 
             if(chain == "bsc") {
                 try {
-                    await bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                    await bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                        parse_mode: "HTML"
+                    })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
-                        bot.telegram.sendMessage(Number(BSC_TRENDING), text)
+                        bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                            parse_mode: "HTML"
+                        })
                     }, 1000*5);
                 }
             } else {
                 try {
-                    await bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                    await bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                        parse_mode: "HTML"
+                    })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
-                        bot.telegram.sendMessage(Number(ETH_TRENDING), text)
+                        bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                            parse_mode: "HTML"
+                        })
                     }, 1000*5);
                 }
             }
@@ -389,6 +436,9 @@ connectDB()
 // }
 
 // mCAP("0x6ec07DbD9311975b8002079d70C6F6d9E3e1EE5C", "bsc")
+// https://pancakeswap.finance/swap?chain=bsc&outputCurrency=0x3419875B4D3Bca7F3FddA2dB7a476A79fD31B4fE
+// https://dexscreener.com/bsc/0x642089a5da2512db761d325a868882ece6e387f5
+// https://pancakeswap.finance/swap?chain=eth&outputCurrency=0x6982508145454Ce325dDbE47a25d4ec3d2311933
 
 setTimeout(() => {
     getBuys()
