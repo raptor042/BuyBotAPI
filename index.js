@@ -14,6 +14,10 @@ const BSC_TRENDING = process.env.BSC_TRENDING
 
 const ETH_TRENDING = process.env.ETH_TRENDING
 
+const BSC_MSG_ID = process.env.BSC_MSG_ID
+
+const ETH_MSG_ID = process.env.ETH_MSG_ID
+
 const URL = process.env.TG_BOT_TOKEN
 
 const bot = new Telegraf(URL)
@@ -33,7 +37,7 @@ const getBuys = async () => {
 
         token.on("Transfer", async (from, to, value, e) => {
             console.log(chat.chain)
-            console.log(from, to, value, e)
+            console.log(from, to, value, e.log.transactionHash)
             const name = await token.name()
             console.log(name)
 
@@ -92,9 +96,9 @@ const getBuys = async () => {
                     format(value, decimals)
                 )
                 if(chat.chain == "bsc") {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n🌐<a href='https://bscscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxBSC_TRENDING/5009'>Trending</a>\n\n`
                 } else {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n🌐<a href='https://etherscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>\n\n`
                 }
             } else {
                 const timestamp = getTimestamp()
@@ -108,9 +112,9 @@ const getBuys = async () => {
                 )
 
                 if(chat.chain == "bsc") {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n🌐<a href='https://bscscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxBSC_TRENDING/5009'>Trending</a>\n\n`
                 } else {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n🌐<a href='https://etherscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>\n\n`
                 }
             }
 
@@ -192,7 +196,7 @@ const trending = async (chain) => {
 
         token.on("Transfer", async (from, to, value, e) => {
             console.log(chat.chain)
-            console.log(from, to, value, e)
+            console.log(from, to, value, e.log.transactionHash)
             const name = await token.name()
             console.log(name)
 
@@ -252,9 +256,9 @@ const trending = async (chain) => {
                 )
 
                 if(chat.chain == "bsc") {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n🌐<a href='https://bscscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxBSC_TRENDING/5009'>Trending</a>\n\n`
                 } else {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 Position : ${priceChange}\n\n🌐<a href='https://etherscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>\n\n`
                 }
             } else {
                 const timestamp = getTimestamp()
@@ -268,9 +272,9 @@ const trending = async (chain) => {
                 )
 
                 if(chat.chain == "bsc") {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n🌐<a href='https://bscscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/bsc/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxBSC_TRENDING/5009'>Trending</a>\n\n`
                 } else {
-                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chat</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>`
+                    text += `💵 ${Number(tokenInfo.pairs[0].priceNative * format(value, decimals))} ${chat.chain == "bsc" ? "BNB" : "ETH"} ($${Number(tokenInfo.pairs[0].priceUsd * format(value, decimals))})\n\n🪙 ${format(value, decimals).toLocaleString()} ${name}\n\n📉 New Holder\n\n🌐<a href='https://etherscan.com/address/${chat.token}'>${e.log.transactionHash} | Txn</a>\n\n📈Market Cap : $${Number(format(supply, decimals) * tokenInfo.pairs[0].priceUsd).toLocaleString()}\n\n📊<a href='https://dexscreener.com/ethereum/${chat.token}'>Chart</a> ♻️<a href='https://pancakeswap.finance/swap?chain=eth&outputCurrency=${chat.token}'>Trade</a> 🚀<a href='https://t.me/OxETH_TRENDING/6974'>Trending</a>\n\n`
                 }
             }
 
@@ -378,28 +382,28 @@ const trending = async (chain) => {
 
             if(chain == "bsc") {
                 try {
-                    await bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                    await bot.telegram.editMessageText(Number(BSC_TRENDING), Number(BSC_MSG_ID), "", text, {
                         parse_mode: "HTML"
                     })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
-                        bot.telegram.sendMessage(Number(BSC_TRENDING), text, {
+                        bot.telegram.editMessageText(Number(BSC_TRENDING), Number(BSC_MSG_ID), "", text, {
                             parse_mode: "HTML"
                         })
                     }, 1000*5);
                 }
             } else {
                 try {
-                    await bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                    await bot.telegram.editMessageText(Number(ETH_TRENDING), Number(ETH_MSG_ID), "", text, {
                         parse_mode: "HTML"
                     })
                 } catch (error) {
                     console.log(error)
     
                     setTimeout(() => {
-                        bot.telegram.sendMessage(Number(ETH_TRENDING), text, {
+                        bot.telegram.editMessageText(Number(ETH_TRENDING), Number(ETH_MSG_ID), "", text, {
                             parse_mode: "HTML"
                         })
                     }, 1000*5);
@@ -422,16 +426,16 @@ connectDB()
 // }
 // sendMsg(-1002032036896, 6974)
 
-setTimeout(() => {
-    getBuys()
+// setTimeout(() => {
+//     getBuys()
 
-    setInterval(getBuys, 1000*60*5)
-}, 1000)
+//     setInterval(getBuys, 1000*60*5)
+// }, 1000)
 
-setInterval(() => {
-    trending("bsc")
+// setInterval(() => {
+//     trending("bsc")
 
-    setTimeout(() => {
-        trending("eth")
-    }, 1000*2)
-}, 1000*30)
+//     setTimeout(() => {
+//         trending("eth")
+//     }, 1000*2)
+// }, 1000*30)
