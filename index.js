@@ -426,16 +426,16 @@ connectDB()
 // }
 // sendMsg(-1002032036896, 6974)
 
-// setTimeout(() => {
-//     getBuys()
+setTimeout(() => {
+    getBuys()
 
-//     setInterval(getBuys, 1000*60*5)
-// }, 1000)
+    setInterval(getBuys, 1000*60*5)
+}, 1000)
 
-// setInterval(() => {
-//     trending("bsc")
+setInterval(() => {
+    trending("bsc")
 
-//     setTimeout(() => {
-//         trending("eth")
-//     }, 1000*2)
-// }, 1000*30)
+    setTimeout(() => {
+        trending("eth")
+    }, 1000*2)
+}, 1000*30)
